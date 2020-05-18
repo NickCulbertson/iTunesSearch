@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <meta name="description" content="">
+                    <meta name="author" content="">
+                        
+                        <title>iTunes Search</title>
+                        
+                        </head>
+    
+    <body>
+<!--        TODO:                               -->
+<!--        Create Login & User Accounts        -->
+<!--        Retrieve Users Previous Selections  -->
+<!--        Save User's Selections To JSON File -->
+<!--        Social Share List                   -->
+        
+        
+        <div style="text-align:center;">
+        <input align="center" style="text-align:center" style="font-size:30px" id="name" type="text" placeholder="Artist Search.." />
+                <input id="btn" type="button" style="font-size:30px" value="Go" />
+                <input id="btnx" type="button" style="font-size:30px" value="Clear" />
+            </div>
+        <p align="center" style="font-size:30px">My Albums</p>
+        <p align="center" style="font-size:20px"id="albums"></p>
+            <p align="center" style="font-size:30px">Results</p>
+            <p align="center" style="font-size:20px"id="results"></p>
+            
+            </body>
+    <script src="jquery-3.5.1.min.js"></script>
+    <script>
+        
+        $(document).ready(function(){
+            $(function(){
+                $('#btn').click(function() {
+                    $('#results').html("");
+                    var affiliate = '10lun6';
+                    var str = $("#name").val();
+                    var btnID = 0
+                    $.getJSON( "https://itunes.apple.com/search?term=" + str + '&limit=100' + '&entity=album' + '&callback=?', function(data) {
+                        $('#results').hide();
+                        $.each(data.results, function() {
+                            $('<p></p>')
+                            .append('<br>' )
+                            .append('<img src="' + this.artworkUrl100 + '" />' )
+                            .append('<br>' )
+                            .append('<span><a href="'
+                                    + this.collectionViewUrl + '&at=' + affiliate + '" target="_blank">' + 'Artist: ' + this.artistName
+                                    + '</a> ' + '<br />Album Title: '  + this.collectionName + '</span>')
+                                    .append('<input id="btn'+btnID+'" type="button" style="font-size:30px" value="Add"/>' )
+                                    .appendTo('#results')
+                                    $("#btn"+btnID).click({param1: btnID},function(event){
+                                            $('<p></p>')
+                                            .append('<br>' )
+                                            .append('<img src="' + data.results[event.data.param1].artworkUrl100 + '" />' )
+                                            .append('<br>' )
+                                            .append('<span><a href="'
+                                                    + data.results[event.data.param1].collectionViewUrl + '&at=' + affiliate + '" target="_blank">' + 'Artist: ' + data.results[event.data.param1].artistName
+                                                    + '</a> ' + '<br />Album Title: '  + data.results[event.data.param1].collectionName + '</span>')
+                                                    .appendTo('#albums')
+                                    });
+                                    btnID+=1
+                        });
+                        $('#results').fadeIn();
+                    });
+                });
+                $('#btnx').click(function() {
+                     $('#results').html("");
+                });
+                
+                
+                
+            });
+        });
+    </script>
+    
+</html>
